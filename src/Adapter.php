@@ -67,10 +67,11 @@ class Adapter {
   public function getPrefixLogging($opts = array()) {
     $that = $this;
     return function ($proxy, $instance, $method, $params, & $returnEarly) use ($that, $opts) {
+      $msg = sprintf("%s.%s +", get_class($instance), $method);
       if (!(array_key_exists("logArguments", $opts) && $opts["logArguments"] == false)) {
-        $that->log->debug(sprintf("%s.%s +", get_class($instance), $method), array("arguments" => $params));
+        $that->log->debug($msg, array("arguments" => $params));
       } else {
-        $that->log->debug(sprintf("%s.%s +", get_class($instance), $method));
+        $that->log->debug($msg);
       }
     };
   }
@@ -78,10 +79,11 @@ class Adapter {
   public function getSuffixLogging($opts = array()) {
     $that = $this;
     return function ($proxy, $instance, $method, $params, $returnValue, & $returnEarly) use ($that, $opts) {
+      $msg = sprintf("%s.%s -", get_class($instance), $method);
       if (array_key_exists("logReturnValue", $opts) && $opts["logReturnValue"] == true) {
-        $that->log->debug(sprintf("%s.%s -", get_class($instance), $method), array("returnValue" => $returnValue));
+        $that->log->debug($msg, array("returnValue" => $returnValue));
       } else {
-        $that->log->debug(sprintf("%s.%s -", get_class($instance), $method));
+        $that->log->debug($msg);
       }
     };
   }
