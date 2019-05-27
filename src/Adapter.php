@@ -32,7 +32,13 @@ class Adapter {
     }
     $logPath = Underscore::PathCombine($this->logDir, $this->logFilename, true);
 
-    $messagePattern = "%datetime% - %level_name% [%channel%] %message% %context% %extra%\n";
+    $msgParts = array("%datetime% - %level_name%");
+    if (strlen($this->logLabel) > 0) {
+      array_push($msgParts, "[%channel%]");
+    }
+    array_push($msgParts, "%message% %context% %extra%\n");
+    $messagePattern = join(" ", $msgParts);
+
     $dateFormat = "Y-m-d\TH:i:s.uP";
     $formatter = new LineFormatter($messagePattern, $dateFormat);
     $stream = new StreamHandler($logPath, Logger::DEBUG);
