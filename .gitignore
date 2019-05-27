@@ -1,0 +1,16 @@
+.DS_Store
+.DS_Store?
+.Trashes
+Thumbs.db
+*.cache
+*.lock
+/.env
+/.hit
+/.vagrant
+/build
+/dist
+/docs
+/examples/log
+/phpdox
+/vendor
+composer.lock

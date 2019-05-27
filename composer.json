@@ -1,0 +1,24 @@
+{
+    "name": "tourane/proxykit",
+    "description": "A proxy/interceptor library in PHP",
+    "version": "0.1.0",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "tourane", "proxy", "logging"
+    ],
+    "autoload": {
+        "classmap": [
+        "src/"
+        ]
+    },
+    "autoload-dev": {
+        "classmap": [
+        "tests/"
+        ]
+    },
+    "require": {
+        "monolog/monolog": "^1.24",
+        "ocramius/proxy-manager": "^2.2"
+    }
+}
