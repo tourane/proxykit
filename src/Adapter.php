@@ -8,7 +8,10 @@ use Monolog\Processor\IntrospectionProcessor;
 use Monolog\Processor\MemoryUsageProcessor;
 use Monolog\Processor\ProcessIdProcessor;
 use Monolog\Processor\WebProcessor;
+use ProxyManager\Configuration;
 use ProxyManager\Factory\AccessInterceptorValueHolderFactory;
+use ProxyManager\FileLocator\FileLocator;
+use ProxyManager\GeneratorStrategy\FileWriterGeneratorStrategy;
 
 const OPTS_FIELD_LOGGING = "loggingMethods";
 
@@ -86,7 +89,37 @@ class Adapter {
         $this->log->pushProcessor(new WebProcessor());
       }
     }
-    $this->factory = new AccessInterceptorValueHolderFactory();
+
+    $proxyCacheEnabled = false;
+    $proxyCacheDir = Underscore::PathCombine(__DIR__, '../tmp/generated/classes', true);
+
+    if (array_key_exists("caching", $opts) && is_array($opts["caching"])) {
+      $cacheOpts = $opts["caching"];
+      if (array_key_exists("dir", $cacheOpts) && is_string($cacheOpts["dir"])) {
+        $proxyCacheDir = $cacheOpts["dir"];
+      }
+      if (array_key_exists("enabled", $cacheOpts) && is_bool($cacheOpts["enabled"])) {
+        $proxyCacheEnabled = $cacheOpts["enabled"];
+      }
+    }
+
+    if ($proxyCacheEnabled) {
+      // create a Configuration
+      $config = new Configuration();
+
+      // register a GeneratorStrategy
+      $fileLocator = new FileLocator($proxyCacheDir);
+      $config->setGeneratorStrategy(new FileWriterGeneratorStrategy($fileLocator));
+
+      // set the directory to read the generated proxies from
+      $config->setProxiesTargetDir($proxyCacheDir);
+
+      // then register the autoloader
+      spl_autoload_register($config->getProxyAutoloader());
+      $this->factory = new AccessInterceptorValueHolderFactory($config);
+    } else {
+      $this->factory = new AccessInterceptorValueHolderFactory();
+    }
   }
 
   public function getLogger() {
