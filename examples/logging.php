@@ -16,6 +16,7 @@ class MongoClient {
     );
   }
   public function close($opts) {
+    throw new Exception("Unknown exception");
     return true;
   }
 }
@@ -23,10 +24,15 @@ class MongoClient {
 $db = new MongoClient();
 
 $adapter = new Adapter(array(
-  "logDir" => dirname(__FILE__ ) . '/log',
-  "logFilename" => "access.log",
-  "logLabel" => "example-01",
-  "extraProcessId" => true
+  "logging" => array(
+    "channel" => "example-01",
+    "file" => array(
+      "dir" => dirname(__FILE__ ) . '/log',
+      "filename" => "access.log"
+    ),
+    "level" => "DEBUG",
+    "extraProcessId" => true
+  )
 ));
 
 $db = $adapter->wrap($db, array(
@@ -42,5 +48,9 @@ $db = $adapter->wrap($db, array(
 $result = $db->find(array("type" => "prime", "max" => 15), null);
 printf("find: %s\n", json_encode($result));
 
-$db->close(array());
+try {
+  $db->close(array());
+} catch (Exception $e) {
+  $adapter->getLogger()->error("Error: " . $e->getMessage());
+}
 ?>
