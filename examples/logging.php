@@ -23,21 +23,21 @@ class MongoClient {
 
 $db = new MongoClient();
 
-$adapter = new Adapter(array(
+$tracer = new Adapter(array(
   "logging" => array(
     "channel" => "example-01",
     "file" => array(
       "dir" => dirname(__FILE__ ) . '/log',
       "filename" => "access.log"
     ),
-    "level" => "DEBUG",
+    "level" => "Info",
     "extra" => array(
       "ProcessId" => true
     )
   )
 ));
 
-$db = $adapter->wrap($db, array(
+$db = $tracer->wrap($db, array(
   "loggingMethods" => array(
     "find" => array(),
     "close" => array(
@@ -53,6 +53,6 @@ printf("find: %s\n", json_encode($result));
 try {
   $db->close(array());
 } catch (Exception $e) {
-  $adapter->getLogger()->error("Error: " . $e->getMessage());
+  $tracer->getLogger()->error("Error: " . $e->getMessage());
 }
 ?>

@@ -20,7 +20,7 @@ class Adapter {
     // initialize the instance
     $logOpts = array();
     $logChannel = null;
-    $logLevel = Logger::DEBUG;
+    $logLevel = Logger::INFO;
     $logDir = "/var/log";
     $logFilename = "access.log";
     $logPath = null;
@@ -94,6 +94,7 @@ class Adapter {
   }
 
   private function transformLogLevel($level) {
+    $level = strtoupper($level);
     switch ($level) {
       case "DEBUG":
         return Logger::DEBUG;
@@ -120,9 +121,9 @@ class Adapter {
     return function ($proxy, $instance, $method, $params, & $returnEarly) use ($that, $opts) {
       $msg = sprintf("%s.%s +", get_class($instance), $method);
       if (!(array_key_exists("logArguments", $opts) && $opts["logArguments"] == false)) {
-        $that->log->debug($msg, array("arguments" => $params));
+        $that->log->info($msg, array("arguments" => $params));
       } else {
-        $that->log->debug($msg);
+        $that->log->info($msg);
       }
     };
   }
@@ -132,9 +133,9 @@ class Adapter {
     return function ($proxy, $instance, $method, $params, $returnValue, & $returnEarly) use ($that, $opts) {
       $msg = sprintf("%s.%s -", get_class($instance), $method);
       if (array_key_exists("logReturnValue", $opts) && $opts["logReturnValue"] == true) {
-        $that->log->debug($msg, array("returnValue" => $returnValue));
+        $that->log->info($msg, array("returnValue" => $returnValue));
       } else {
-        $that->log->debug($msg);
+        $that->log->info($msg);
       }
     };
   }
