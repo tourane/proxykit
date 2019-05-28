@@ -9,6 +9,8 @@ use Monolog\Processor\MemoryUsageProcessor;
 use Monolog\Processor\ProcessIdProcessor;
 use Monolog\Processor\WebProcessor;
 use ProxyManager\Factory\AccessInterceptorValueHolderFactory as Factory;
+use ProxyManager\Factory\LazyLoadingValueHolderFactory;
+use ProxyManager\Proxy\LazyLoadingInterface;
 
 const OPTS_FIELD_LOGGING = "loggingMethods";
 
@@ -64,7 +66,11 @@ class Adapter {
     $this->factory = new Factory();
   }
 
-  public function getPrefixLogging($opts = array()) {
+  public function getLogger() {
+    return $this->log;
+  }
+
+  private function getPrefixLogging($opts = array()) {
     $that = $this;
     return function ($proxy, $instance, $method, $params, & $returnEarly) use ($that, $opts) {
       $msg = sprintf("%s.%s +", get_class($instance), $method);
@@ -76,7 +82,7 @@ class Adapter {
     };
   }
 
-  public function getSuffixLogging($opts = array()) {
+  private function getSuffixLogging($opts = array()) {
     $that = $this;
     return function ($proxy, $instance, $method, $params, $returnValue, & $returnEarly) use ($that, $opts) {
       $msg = sprintf("%s.%s -", get_class($instance), $method);
