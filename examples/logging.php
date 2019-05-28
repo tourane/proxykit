@@ -24,6 +24,10 @@ class MongoClient {
 $db = new MongoClient();
 
 $tracer = new Adapter(array(
+  "caching" => array(
+    "enabled" => true,
+    "dir" => dirname(__FILE__ ) . '/tmp/generated/classes'
+  ),
   "logging" => array(
     "channel" => "example-01",
     "file" => array(

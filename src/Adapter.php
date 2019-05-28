@@ -91,19 +91,23 @@ class Adapter {
     }
 
     $proxyCacheEnabled = false;
-    $proxyCacheDir = Underscore::PathCombine(__DIR__, '../tmp/generated/classes', true);
+    $proxyCacheDir = null;
 
     if (array_key_exists("caching", $opts) && is_array($opts["caching"])) {
       $cacheOpts = $opts["caching"];
-      if (array_key_exists("dir", $cacheOpts) && is_string($cacheOpts["dir"])) {
-        $proxyCacheDir = $cacheOpts["dir"];
-      }
       if (array_key_exists("enabled", $cacheOpts) && is_bool($cacheOpts["enabled"])) {
         $proxyCacheEnabled = $cacheOpts["enabled"];
       }
+      if (array_key_exists("dir", $cacheOpts) && is_string($cacheOpts["dir"])) {
+        $proxyCacheDir = $cacheOpts["dir"];
+      }
     }
 
-    if ($proxyCacheEnabled) {
+    if (strlen($proxyCacheDir) > 0 && is_dir($proxyCacheDir) === false) {
+      mkdir($proxyCacheDir, 0755, true);
+    }
+
+    if ($proxyCacheEnabled && is_dir($proxyCacheDir)) {
       // create a Configuration
       $config = new Configuration();
 
