@@ -70,20 +70,23 @@ class Adapter {
       $this->log->pushHandler($stream);
     }
 
-    if (!(array_key_exists("extraUID", $logOpts) && $logOpts["extraUID"] == false)) {
-      $this->log->pushProcessor(new UidProcessor(24));
-    }
-    if (array_key_exists("extraProcessId", $logOpts) && $logOpts["extraProcessId"] == true) {
-      $this->log->pushProcessor(new ProcessIdProcessor());
-    }
-    if (array_key_exists("extraIntrospection", $logOpts) && $logOpts["extraIntrospection"] == true) {
-      $this->log->pushProcessor(new IntrospectionProcessor());
-    }
-    if (array_key_exists("extraMemoryUsage", $logOpts) && $logOpts["extraMemoryUsage"] == true) {
-      $this->log->pushProcessor(new MemoryUsageProcessor());
-    }
-    if (!(array_key_exists("extraWeb", $logOpts) && $logOpts["extraWeb"] == false)) {
-      $this->log->pushProcessor(new WebProcessor());
+    if (array_key_exists("extra", $logOpts) && is_array($logOpts["extra"])) {
+      $extra = $logOpts["extra"];
+      if (!(array_key_exists("Uid", $extra) && $extra["Uid"] == false)) {
+        $this->log->pushProcessor(new UidProcessor(24));
+      }
+      if (array_key_exists("ProcessId", $extra) && $extra["ProcessId"] == true) {
+        $this->log->pushProcessor(new ProcessIdProcessor());
+      }
+      if (array_key_exists("Introspection", $extra) && $extra["Introspection"] == true) {
+        $this->log->pushProcessor(new IntrospectionProcessor());
+      }
+      if (array_key_exists("MemoryUsage", $extra) && $extra["MemoryUsage"] == true) {
+        $this->log->pushProcessor(new MemoryUsageProcessor());
+      }
+      if (!(array_key_exists("Web", $extra) && $extra["Web"] == false)) {
+        $this->log->pushProcessor(new WebProcessor());
+      }
     }
     $this->factory = new Factory();
   }

@@ -31,7 +31,9 @@ $adapter = new Adapter(array(
       "filename" => "access.log"
     ),
     "level" => "DEBUG",
-    "extraProcessId" => true
+    "extra" => array(
+      "ProcessId" => true
+    )
   )
 ));
 
