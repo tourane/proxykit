@@ -8,9 +8,7 @@ use Monolog\Processor\IntrospectionProcessor;
 use Monolog\Processor\MemoryUsageProcessor;
 use Monolog\Processor\ProcessIdProcessor;
 use Monolog\Processor\WebProcessor;
-use ProxyManager\Factory\AccessInterceptorValueHolderFactory as Factory;
-use ProxyManager\Factory\LazyLoadingValueHolderFactory;
-use ProxyManager\Proxy\LazyLoadingInterface;
+use ProxyManager\Factory\AccessInterceptorValueHolderFactory;
 
 const OPTS_FIELD_LOGGING = "loggingMethods";
 
@@ -88,7 +86,7 @@ class Adapter {
         $this->log->pushProcessor(new WebProcessor());
       }
     }
-    $this->factory = new Factory();
+    $this->factory = new AccessInterceptorValueHolderFactory();
   }
 
   public function getLogger() {
