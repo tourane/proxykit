@@ -6,7 +6,9 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Processor\UidProcessor;
 use Monolog\Processor\IntrospectionProcessor;
 use Monolog\Processor\MemoryUsageProcessor;
+use Monolog\Processor\MemoryPeakUsageProcessor;
 use Monolog\Processor\ProcessIdProcessor;
+use Monolog\Processor\TagProcessor;
 use Monolog\Processor\WebProcessor;
 use ProxyManager\Configuration;
 use ProxyManager\Factory\AccessInterceptorValueHolderFactory;
@@ -57,7 +59,7 @@ class Adapter {
     if (strlen($logChannel) > 0) {
       array_push($msgParts, "[%channel%]");
     }
-    array_push($msgParts, "%message% %context% %extra%\n");
+    array_push($msgParts, "%message% --1-- %context% --2-- %extra%\n");
     $messagePattern = join(" ", $msgParts);
 
     $dateFormat = "Y-m-d\TH:i:s.uP";
@@ -81,6 +83,9 @@ class Adapter {
       }
       if (array_key_exists("Introspection", $extra) && $extra["Introspection"] == true) {
         $this->log->pushProcessor(new IntrospectionProcessor());
+      }
+      if (array_key_exists("MemoryPeakUsage", $extra) && $extra["MemoryPeakUsage"] == true) {
+        $this->log->pushProcessor(new MemoryPeakUsageProcessor());
       }
       if (array_key_exists("MemoryUsage", $extra) && $extra["MemoryUsage"] == true) {
         $this->log->pushProcessor(new MemoryUsageProcessor());

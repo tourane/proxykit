@@ -34,9 +34,11 @@ $tracer = new Adapter(array(
       "dir" => dirname(__FILE__ ) . '/log',
       "filename" => "access.log"
     ),
-    "level" => "Info",
+    "level" => "Debug",
     "extra" => array(
-      "ProcessId" => true
+      "ProcessId" => true,
+      "Introspection" => true,
+      "MemoryUsage" => true
     )
   )
 ));
